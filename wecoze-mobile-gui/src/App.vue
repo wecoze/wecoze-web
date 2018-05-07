@@ -3,12 +3,12 @@
     <main>
       <router-view></router-view>
       <nav class="weui-tabbar main-nav">
-        <a class="weui-tabbar__item weui-bar__item_on">
+        <a class="weui-tabbar__item weui-bar__item_on" v-for="(item, index) in navConfig">
           <span style="display: inline-block;position: relative;">
-              <img src="./assets/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+              <img :src="item.icon" alt="" class="weui-tabbar__icon">
               <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">8</span>
           </span>
-          <p class="weui-tabbar__label">微信</p>
+          <p class="weui-tabbar__label">{{item.text}}</p>
         </a>
       </nav>
     </main>
@@ -16,17 +16,15 @@
 </template>
 
 <script>
-  import config from './config'
-  console.log(config)
   export default {
     name: 'app',
     data () {
       return {
-        navConfig: config.navBar
+        navConfig: this.$store.getters.config.navBar
       }
     },
     mounted () {
-      console.log(this.$store.state.index)
+      console.log(this.navConfig)
     }
   }
 </script>

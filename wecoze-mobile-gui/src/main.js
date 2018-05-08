@@ -7,7 +7,7 @@ import betterScroll from 'better-scroll'
 import AlloyFinger from 'alloyfinger'
 import AlloyFingerPlugin from 'alloyfinger/vue/alloy_finger.vue'
 import './assets/weui.css'
-import store from './store'
+import store from './store/index'
 
 Vue.use(AlloyFingerPlugin, { AlloyFinger })
 Vue.config.productionTip = false

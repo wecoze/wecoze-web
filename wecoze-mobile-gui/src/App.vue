@@ -1,17 +1,18 @@
 <template>
   <div id="app">
     <main>
-      <router-view></router-view>
-      <nav class="weui-tabbar main-nav">
-        <a class="weui-tabbar__item weui-bar__item_on" v-for="(item, index) in navConfig">
-          <span style="display: inline-block;position: relative;">
-              <img :src="item.icon" alt="" class="weui-tabbar__icon">
-              <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">8</span>
-          </span>
-          <p class="weui-tabbar__label">{{item.text}}</p>
-        </a>
-      </nav>
+      <router-view ref="wrapper"></router-view>
     </main>
+    <nav class="weui-tabbar main-nav">
+      <a class="weui-tabbar__item" :class="{'weui-bar__item_on': key === index}" v-for="(item, key) in tabConfig" @click="switchView(key)">
+          <span>
+            <img :src="item.icon" class="weui-tabbar__icon">
+            <span class="weui-badge" v-if="messageCounts[item.name] > 0">{{messageCounts[item.name]}}</span>
+            <span class="weui-badge weui-badge_dot" v-if="messageCounts[item.name] === -1"></span>
+          </span>
+        <p class="weui-tabbar__label">{{item.text}}</p>
+      </a>
+    </nav>
   </div>
 </template>
 
@@ -20,11 +21,27 @@
     name: 'app',
     data () {
       return {
-        navConfig: this.$store.getters.config.navBar
+        index: 0
+      }
+    },
+    computed: {
+      tabConfig () { return this.$store.getters.config.tabBar },
+      messageCounts () { return this.$store.state.UI.noticeCounts },
+      paths () {
+        return this.tabConfig.map(_item => {
+          return _item.id.replace('messages', '')
+        })
       }
     },
     mounted () {
-      console.log(this.navConfig)
+      console.log(this.$store.getters.config)
+      this.index = this.paths.indexOf(this.$router.history.current.path.replace('/', ''))
+    },
+    methods: {
+      switchView (_index) {
+        this.index = _index
+        this.$router.replace('/' + this.paths[_index])
+      }
     }
   }
 </script>
@@ -42,6 +59,33 @@
     color: #2c3e50;
     height: 100%;
     margin: 0 auto;
+    position: relative;
+  }
+
+  .main-nav {
+    height: 53px;
+  }
+
+  main {
+    box-sizing: border-box;
+    height: 100%;
+    padding-bottom: 53px;
+  }
+
+  .weui-tabbar .weui-badge {
+    position: absolute;
+    top: -2px;
+    right: -13px;
+  }
+
+  .weui-tabbar .weui-badge.weui-badge_dot {
+    position: absolute;
+    top: 0;
+    right: -6px;
+  }
+
+  .weui-tabbar__item > span {
+    display: inline-block;
     position: relative;
   }
 
